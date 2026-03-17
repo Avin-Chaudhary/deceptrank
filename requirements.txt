@@ -13,8 +13,10 @@ numpy==2.4.3
 packaging==26.0
 pandas==3.0.1
 pillow==12.1.1
+py4j==0.10.9.9
 pynndescent==0.6.0
 pyparsing==3.3.2
+pyspark==4.1.1
 python-dateutil==2.9.0.post0
 scikit-learn==1.8.0
 scipy==1.17.1
