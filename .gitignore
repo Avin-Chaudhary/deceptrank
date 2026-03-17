@@ -1,0 +1,22 @@
+# data files
+data/
+
+# outputs
+output/
+
+# python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# jupyter
+.ipynb_checkpoints/
+
+# images
+*.png
+*.jpg
+
+# csv outputs
+output*.csv
