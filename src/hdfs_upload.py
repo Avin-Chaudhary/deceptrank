@@ -11,11 +11,8 @@ from src.utils import logger, Timer
 
 
 def run_hdfs_command(cmd):
-    """
-    Run an HDFS shell command from Python.
-    Returns True if successful, False if failed.
-    """
-    full_cmd = f"hdfs dfs {cmd}"
+    """Run HDFS command through WSL."""
+    full_cmd = f"wsl hdfs dfs {cmd}"
     logger.info(f"Running: {full_cmd}")
 
     result = subprocess.run(
@@ -75,18 +72,15 @@ def list_hdfs_dir(hdfs_path):
 
 
 def check_hdfs_available():
-    """Check if HDFS is running and reachable."""
+    """Check if HDFS is running by connecting to its web port."""
+    import socket
     logger.info("Checking HDFS availability...")
-    result = subprocess.run(
-        "hdfs dfs -ls /",
-        shell=True,
-        capture_output=True,
-        text=True
-    )
-    if result.returncode == 0:
+    try:
+        sock = socket.create_connection(("localhost", 9870), timeout=3)
+        sock.close()
         logger.info("HDFS is running and reachable")
         return True
-    else:
+    except (socket.timeout, ConnectionRefusedError, OSError):
         logger.warning(
             "HDFS not reachable — running in local mode only.\n"
             "Start Hadoop with: start-dfs.sh in WSL"
