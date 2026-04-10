@@ -17,11 +17,27 @@ def plot_spreader_network(G, influence_df, cluster_map, top_n=TOP_N):
     with Timer("Plotting spreader network"):
         ensure_dir(OUTPUT_DIR)
 
-        # get top n nodes
+        # # get top n nodes
+        # top_nodes = set(influence_df.head(top_n)["node_id"].tolist())
+
+        # # use full graph but highlight top nodes
+        # pos    = nx.spring_layout(G, seed=42, k=1.5)
+
+        # get top n nodes only — do NOT use full graph
         top_nodes = set(influence_df.head(top_n)["node_id"].tolist())
 
-        # use full graph but highlight top nodes
-        pos    = nx.spring_layout(G, seed=42, k=1.5)
+        # build a small subgraph of only top nodes + their neighbors
+        extended_nodes = set()
+        for node in top_nodes:
+            extended_nodes.add(node)
+            if node in G:
+                neighbors = list(G.neighbors(node))[:5]
+                extended_nodes.update(neighbors)
+
+        # work only on this small subgraph
+        G = G.subgraph(extended_nodes).copy()
+        pos = nx.spring_layout(G, seed=42, k=1.5)
+
         scores = influence_df.set_index("node_id")["influence_score"]
 
         # node sizes based on influence score
@@ -99,8 +115,19 @@ def plot_umap_clusters(nodes, embedding2d, cluster_map, influence_df):
     with Timer("Plotting UMAP clusters"):
         ensure_dir(OUTPUT_DIR)
 
+        # scores = influence_df.set_index("node_id")["influence_score"]
+        # sizes  = np.array([scores.get(n, 0.01) * 500 + 30 for n in nodes])
+
+        # sample max 2000 nodes for UMAP plot — 65k is too slow
+        if len(nodes) > 2000:
+            import random
+            sample_idx = random.sample(range(len(nodes)), 2000)
+            nodes      = [nodes[i] for i in sample_idx]
+            embedding2d = embedding2d[sample_idx]
+
         scores = influence_df.set_index("node_id")["influence_score"]
         sizes  = np.array([scores.get(n, 0.01) * 500 + 30 for n in nodes])
+
         colors = [cluster_map.get(n, 0) for n in nodes]
 
         fig, ax = plt.subplots(figsize=(12, 8))
