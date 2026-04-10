@@ -4,6 +4,9 @@ data/
 # outputs
 output/
 
+#temporary 
+temporary/
+
 # python
 venv/
 __pycache__/
