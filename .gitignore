@@ -2,7 +2,7 @@
 # data/
 
 # outputs
-output/
+# output/
 
 #temporary 
 temporary/
@@ -22,4 +22,4 @@ __pycache__/
 *.jpg
 
 # csv outputs
-output*.csv
+# output*.csv
