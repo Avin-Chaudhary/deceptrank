@@ -44,32 +44,6 @@ def cluster_nodes(model, n_clusters=N_CLUSTERS):
     return cluster_map
 
 
-def get_umap_projection(model):
-    """
-    Reduce embeddings to 2D using UMAP
-    for visualization purposes.
-    Falls back to PCA if UMAP not available.
-    """
-    nodes, vectors = get_embeddings_matrix(model)
-
-    try:
-        import umap
-        with Timer("UMAP 2D projection"):
-            reducer     = umap.UMAP(n_components=2, random_state=42)
-            embedding2d = reducer.fit_transform(vectors)
-        logger.info("UMAP projection complete")
-
-    except Exception as e:
-        logger.warning(f"UMAP failed ({e}), falling back to PCA")
-        from sklearn.decomposition import PCA
-        with Timer("PCA 2D projection"):
-            pca         = PCA(n_components=2, random_state=42)
-            embedding2d = pca.fit_transform(vectors)
-        logger.info("PCA projection complete")
-
-    return nodes, embedding2d
-
-
 def find_bridge_nodes(G, cluster_map, influence_df):
     """
     Bridge nodes = high influence users who
@@ -128,9 +102,8 @@ def run_clustering(model, G, influence_df):
     """Full clustering pipeline."""
     logger.info("=== Starting Clustering ===")
 
-    cluster_map       = cluster_nodes(model)
-    nodes, embedding2d = get_umap_projection(model)
-    bridge_df         = find_bridge_nodes(G, cluster_map, influence_df)
+    cluster_map = cluster_nodes(model)
+    bridge_df   = find_bridge_nodes(G, cluster_map, influence_df)
 
     logger.info("=== Clustering Complete ===")
-    return cluster_map, nodes, embedding2d, bridge_df
+    return cluster_map, bridge_df

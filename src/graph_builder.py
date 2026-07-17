@@ -57,19 +57,6 @@ def get_weighted_outdegree(G):
     return outdegree
 
 
-def sample_graph(G, n_nodes):
-    """
-    Sample top n_nodes by out-degree for scalability testing.
-    """
-    top_nodes = sorted(
-        G.nodes(),
-        key=lambda n: G.out_degree(n),
-        reverse=True
-    )[:n_nodes]
-
-    subG = G.subgraph(top_nodes).copy()
-    logger.info(f"Sampled graph: {subG.number_of_nodes()} nodes, {subG.number_of_edges()} edges")
-    return subG
 
 
 def print_graph_stats(G):

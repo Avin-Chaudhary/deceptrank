@@ -13,13 +13,7 @@ from src.graph_builder import (
 from src.node2vec_runner import run_node2vec
 from src.influence_scorer import run_influence_scoring, get_top_spreaders
 from src.clustering import run_clustering
-from src.visualize import (
-    plot_spreader_network,
-    plot_umap_clusters,
-    plot_top_spreaders_bar,
-    plot_scalability
-)
-from src.scalability import run_scalability_tests
+from src.visualize import plot_top_spreaders_bar
 
 
 def main():
@@ -71,23 +65,14 @@ def main():
 
     # ── Step 6: Clustering ────────────────────────────────
     logger.info("STEP 6 — Clustering")
-    cluster_map, nodes, embedding2d, bridge_df = run_clustering(
-        model, G, influence_df
-    )
+    cluster_map, bridge_df = run_clustering(model, G, influence_df)
 
     # save bridge nodes
     save_csv(bridge_df, "bridge_nodes.csv", OUTPUT_DIR)
 
     # ── Step 7: Visualizations ────────────────────────────
     logger.info("STEP 7 — Visualizations")
-    plot_spreader_network(G, influence_df, cluster_map)
-    plot_umap_clusters(nodes, embedding2d, cluster_map, influence_df)
     plot_top_spreaders_bar(influence_df)
-
-    # ── Step 8: Scalability Tests ─────────────────────────
-    logger.info("STEP 8 — Scalability Tests")
-    scalability_results = run_scalability_tests()
-    plot_scalability(scalability_results)
 
     # ── Done ──────────────────────────────────────────────
     stop_spark(spark)

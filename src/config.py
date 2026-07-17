@@ -2,7 +2,7 @@ import os
 
 # ─── Paths ────────────────────────────────────────────────
 BASE_DIR        = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR        = os.path.join(BASE_DIR, "data", "raw")
+DATA_DIR        = os.path.join(BASE_DIR, "data")
 SYNTHETIC_DIR   = os.path.join(BASE_DIR, "data", "synthetic")
 OUTPUT_DIR      = os.path.join(BASE_DIR, "output")
 
@@ -47,8 +47,7 @@ GAMMA = 0.4   # weighted outdegree weight
 # ─── Clustering ───────────────────────────────────────────
 N_CLUSTERS      = 3
 
-# ─── Scalability Test Sizes ───────────────────────────────
-SCALABILITY_SIZES = [100, 500, 1000]
+
 
 # ─── Top N spreaders to show ──────────────────────────────
 TOP_N = 10
